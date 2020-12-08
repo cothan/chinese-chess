@@ -5,7 +5,7 @@ from orator.orm import belongs_to
 
 class Table(Model):
     """Table Model."""
-    __fillable__ = ['user_id', 'oppo_id', 'game_id', 'move', 'completed', 'last_move_timestamp']
+    __fillable__ = ['user_id', 'oppo_id', 'token', 'move', 'completed', 'last_move_timestamp']
 
     @belongs_to('user_id', 'id')
     def user(self):

@@ -32,9 +32,9 @@ class GameController(Controller):
     
     def store(self, request: Request, view: View):
         """
-        Generate a new game_id, return to chess/@game_id/ @show
+        Generate a new token, return to chess/@token/ @show
         """
-        friend = request.input('friend')
+        friend = request.input('friend', clean=True, quotes=True)
         # TODO: filter friend input 
         if not User.find(friend):
             return 'Invalid username'
@@ -43,19 +43,19 @@ class GameController(Controller):
         Table.create(
             user_id = request.user().id,
             oppo_id = friend_id,
-            game_id = token, 
+            token = token, 
             completed = False,
             last_move_timestamp = int(time),
         )       
-        return view.render(f'play/{token}')
+        return request.redirect("/play/@token", {'token': token})
 
     def resume(self, request: Request, view: View):
-        game_id = request.input('game_id')
-        #TODO: filter game_id 
+        token = request.input('token')
+        #TODO: filter token 
         
-        table = Table.find(game_id)
+        table = Table.find(token)
         if not table:
-            return "game_id is not exist"
+            return "token is not exist"
         
         # Check timestamp
         timestamp = int(time) - table.last_move_timestamp
@@ -64,8 +64,7 @@ class GameController(Controller):
             table.completed = True
             return "Timeout"
         
-
-        return view.render(f'play/{game_id}')
+        return request.redirect("/play/@token", {'token': token})
 
 
 

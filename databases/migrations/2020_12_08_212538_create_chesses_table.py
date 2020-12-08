@@ -10,7 +10,7 @@ class CreateChessesTable(Migration):
         with self.schema.create('chesses') as table:
             table.increments('id')
 
-            table.string('game_id')
+            table.string('token')
 
             table.integer('user_id').unsigned()
             table.foreign('user_id').references('id').on('users')
