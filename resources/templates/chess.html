@@ -1,0 +1,18 @@
+{% if exists('auth/base') %} {% extends 'auth/base.html' %} {% else %} {% extends 'base.html' %} {% endif %} {% block css %}
+<!-- Application CSS -->
+<link href="/static/style.css" rel="stylesheet" type="text/css"> {% endblock %} {% if auth() %} {% for t in table %}
+<br> {{ t.move }}
+<br> {{ t.last_move_timestamp }}
+<br> {{ t.token }}
+<hr> {% endfor %}
+
+<form action="/move" method="POST">
+    {{ csrf_field }}
+
+    <label> Enter new move </label>
+    <input type="name" name="move"><br>
+
+    <input type="submit" value="Post!">
+</form>
+{% else %}
+<a href="/login">Please Login</a> {% endif %}

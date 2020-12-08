@@ -18,6 +18,8 @@ class CreateChessesTable(Migration):
             table.integer('oppo_id').unsigned()
             table.foreign('oppo_id').references('id').on('users')
 
+            table.integer('next_id').unsigned()
+
             table.string('move').nullable()
             table.boolean('completed')
             table.integer('last_move_timestamp').unsigned()

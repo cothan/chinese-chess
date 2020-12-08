@@ -6,8 +6,11 @@ ROUTES = [
     Get('/', 'WelcomeController@show').name('welcome'),
     
     Get('/game', 'GameController@show'),
-    Get('/game/create', 'GameController@store'),
-    Get('/game/resume', 'GameController@resume'),
+    Post('/game/create', 'GameController@store'),
+    Post('/game/resume', 'GameController@resume'),
+
+    Get('/play/@token', 'ChessController@show'),
+    Post('/play/@token/move', 'ChessController@move')
 ]
 
 from masonite.auth import Auth 
