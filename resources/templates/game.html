@@ -1,0 +1,23 @@
+{% if auth() %} {% for user in users %} {{ user.name }}
+<hr> {% endfor %}
+
+<form action="/game/create" method="POST">
+    {{ csrf_field }}
+
+    <label> Pick a friend name </label>
+    <input type="name" name="friend"><br>
+
+    <input type="submit" value="Post!">
+</form>
+
+
+<form action="/game/resume" method="POST">
+    {{ csrf_field }}
+
+    <label> Enter Game ID </label>
+    <input type="name" name="game_id"><br>
+
+    <input type="submit" value="Post!">
+</form>
+{% else %}
+<a href="/login">Please Login</a> {% endif %}
