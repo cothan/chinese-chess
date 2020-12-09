@@ -1,5 +1,5 @@
-from gametree import *
-from pieces import *
+from app.http.controllers.game.gametree import *
+from app.http.controllers.game.pieces import *
 
 class Gamestate(object):
     

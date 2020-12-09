@@ -1,5 +1,5 @@
 from abc import ABCMeta, abstractmethod
-from gametree import *
+from app.http.controllers.game.gametree import *
 
 class Position(object):
     def __init__(self,x,y):

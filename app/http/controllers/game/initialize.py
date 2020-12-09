@@ -1,4 +1,4 @@
-from pieces import *
+from app.http.controllers.game.pieces import *
 
 redpieces = [General(Position(4,0),True,"red.general.0"), \
 			 Advisor(Position(3,0),True,"red.advisor.0"), Advisor(Position(5,0),True,"red.advisor.1"), \

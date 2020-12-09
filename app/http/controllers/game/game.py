@@ -1,7 +1,7 @@
-from pieces import *
-from initialize import *
-from gametree import *
-from state_representation import *
+from app.http.controllers.game.pieces import *
+from app.http.controllers.game.initialize import *
+from app.http.controllers.game.gametree import *
+from app.http.controllers.game.state_representation import *
 
 '''
 Rules:
@@ -205,22 +205,22 @@ def print_board_2(board):
 def print_help():
     ''' Helper function for printing the help table. No parameters or return.'''
     
-    print("\n\n------------------------------------ HELP -------------------------------------- ")
+    print("------------------------------------ HELP -------------------------------------- ")
     print("A move is made by a user input of the form:\n\t- 3 character piece code\n\t- Coordinates of the position where that piece will move\n\t(these two arguments are on the same line, separated by a space)\n")
     print("The character code is of the following form: [player colour][piece name letter][piece number]\n")
     print("The player colour is either 'R' for red, or 'B' for black.\nA player can only move his/her own pieces.\n")
     print("The piece name letter is a letter corresponding to the piece type:\n\tG = general\n\tA = advisor\n\tE = elephant\n\tH = horse\n\tR = chariot\n\tC = cannon\n\tS = soldier\n")
-    print("The piece number differentiates different pieces of the same type.\n\n")
+    print("The piece number differentiates different pieces of the same type.")
     print("The coordinates for this piece's destination must be inputed in the form XY where X is the letter corresponding to the column, and Y is the number corresponding to the row.\nIn this board, x ranges from A to I, and y from 0 to 9 (origin is at the top left)\n")
     print("Inputs are not case sensitive.\n")
     print("A player can end the game by typing \"end\". A player can also ask for help by typing \"help\", and can ask for the rules by typing \".\n")
     print("An example of a valid input would be: RA1 E1\nThis would move red admiral 1 to the spot E1 on the board.\n")
-    print("--------------------------------------------------------------------------------\n\n")
+    print("--------------------------------------------------------------------------------")
     return
 
 
 def print_rules():
-    print("\n\n----------------------------------- RULES -------------------------------------- ")
+    print("----------------------------------- RULES -------------------------------------- ")
     print("The objective of the game is to capture the opponent's general. Whoever does so wins the game.\n")
     print("There is a river horizontally across the middle of the board that can be crossed by anyone except the Advisors, the Elephants, and the Generals (with the exception of the \"flying general\" move described below).\n")
     print("There are two 3x3 tents, one for each player, centered at the top and bottom of the board. The Advisors cannot leave the tent, and the Generals can only leave the tent for the the \"flying general\" move described below. Any other piece from either player can enter or leave either tent.\n")
@@ -231,7 +231,7 @@ def print_rules():
     print("Chariot (R)\nMuch like a rook in chess, it can move and capture any distance orthogonally but cannot jump over any pieces.\n")
     print("Cannon (C)\nCan move any distance orthogonally without jumping over any pieces. It can capture any distance orthogonally by jumping over exactly one piece in the line of fire (any orthogonal range, but must only have one piece (\"screen\") in the way).\n")
     print("Soldier (S)\nCannot move backwards or diagonally before river, can only move/capture one space forward at a time. After the river, it can move/capture one space forward/sideways. At end of the board, it cannot move forward/backwards, but can still move/capture sideways.\n")
-    print("--------------------------------------------------------------------------------\n\n")
+    print("--------------------------------------------------------------------------------")
     return
 
 
@@ -247,19 +247,19 @@ def format_input(input_str, turn):
     input_str = input_str[:3]  + ' ' + input_str[3:]
     input_str = input_str.split(" ")
     if len(input_str) != 2:
-        print("\nIncorrect number of input arguments.")
+        printstr = ("\nIncorrect number of input arguments.")
         print("Try again. Type \"help\" for help if needed, and type \"rules\" for rules.\n")
-        return -1, -1
+        return -1, -1, printstr
 
     if len(input_str[0]) != 3:
-        print("\nIncorrect piece code length.")
+        printstr = ("\nIncorrect piece code length.")
         print("Try again. Type \"help\" for help if needed, and type \"rules\" for rules.\n")
-        return -1, -1
+        return -1, -1, printstr
 
     if len(input_str[1]) != 2:
-        print("\nIncorrect coordinate input length.")
+        printstr = ("\nIncorrect coordinate input length.")
         print("Try again. Type \"help\" for help if needed, and type \"rules\" for rules.\n")
-        return -1, -1
+        return -1, -1, printstr
 
     # The lengths are good, now checking for valid input and building piecename
     tempcolour = input_str[0][0].upper()
@@ -274,83 +274,83 @@ def format_input(input_str, turn):
     # Colour
     if tempcolour == "R":
         if not turn:
-            print("\nCannot move opponent's pieces.")
+            printstr = ("\nCannot move opponent's pieces.")
             print("Try again. Type \"help\" for help if needed, and type \"rules\" for rules.\n")
-            return -1, -1
+            return -1, -1, printstr
         piecename += "red."
     elif tempcolour == "B":
         if turn:
-            print("\nCannot move opponent's pieces.")
+            printstr = ("\nCannot move opponent's pieces.")
             print("Try again. Type \"help\" for help if needed, and type \"rules\" for rules.\n")
-            return -1, -1
+            return -1, -1, printstr
         piecename += "black."
     else:
-        print("\nInvalid piece colour.")
+        printstr = ("\nInvalid piece colour.")
         print("Try again. Type \"help\" for help if needed, and type \"rules\" for rules.\n")
-        return -1, -1
+        return -1, -1, printstr
 
 
     # Piece name letter and number
     if tempname == "G":
         piecename += "general."
         if tempnumber != "0":
-            print("\nInvalid piece number. The general can only have number 0.")
+            printstr = ("\nInvalid piece number. The general can only have number 0.")
             print("Try again. Type \"help\" for help if needed, and type \"rules\" for rules.\n")
-            return -1, -1
+            return -1, -1, printstr
         piecename += tempnumber
         
     elif tempname == "A":
         piecename += "advisor."
         if tempnumber not in ["0", "1"]:
-            print("\nInvalid piece number. The advisor can only have numbers 0 or 1.")
+            printstr = ("\nInvalid piece number. The advisor can only have numbers 0 or 1.")
             print("Try again. Type \"help\" for help if needed, and type \"rules\" for rules.\n")
-            return -1, -1
+            return -1, -1, printstr
         piecename += tempnumber
         
     elif tempname == "E":
         piecename += "elephant."
         if tempnumber not in ["0", "1"]:
-            print("\nInvalid piece number. The elephant can only have numbers 0 or 1.")
+            printstr = ("\nInvalid piece number. The elephant can only have numbers 0 or 1.")
             print("Try again. Type \"help\" for help if needed, and type \"rules\" for rules.\n")
-            return -1, -1
+            return -1, -1, printstr
         piecename += tempnumber
         
     elif tempname == "H":
         piecename += "horse."
         if tempnumber not in ["0", "1"]:
-            print("\nInvalid piece number. The horse can only have numbers 0 or 1.")
+            printstr = ("\nInvalid piece number. The horse can only have numbers 0 or 1.")
             print("Try again. Type \"help\" for help if needed, and type \"rules\" for rules.\n")
-            return -1, -1
+            return -1, -1, printstr
         piecename += tempnumber
         
     elif tempname == "R":
         piecename += "chariot."
         if tempnumber not in ["0", "1"]:
-            print("\nInvalid piece number. The chariot can only have numbers 0 or 1.")
+            printstr = ("\nInvalid piece number. The chariot can only have numbers 0 or 1.")
             print("Try again. Type \"help\" for help if needed, and type \"rules\" for rules.\n")
-            return -1, -1
+            return -1, -1, printstr
         piecename += tempnumber
         
     elif tempname == "C":
         piecename += "cannon."
         if tempnumber not in ["0", "1"]:
-            print("\nInvalid piece number. The cannon can only have numbers 0 or 1.")
+            printstr = ("\nInvalid piece number. The cannon can only have numbers 0 or 1.")
             print("Try again. Type \"help\" for help if needed, and type \"rules\" for rules.\n")
-            return -1, -1
+            return -1, -1, printstr
         piecename += tempnumber
         
     elif tempname == "S":
         piecename += "soldier."
         if tempnumber not in ["0", "1", "2", "3", "4"]:
-            print("\nInvalid piece number. The soldier can only have numbers 0, 1, 2, 3, or 4.")
+            printstr = ("\nInvalid piece number. The soldier can only have numbers 0, 1, 2, 3, or 4.")
             print("Try again. Type \"help\" for help if needed, and type \"rules\" for rules.\n")
-            return -1, -1
+            return -1, -1, printstr
         piecename += tempnumber
         
     else:
-        print("\nInvalid piece name letter.")
+        printstr = ("\nInvalid piece name letter.")
         print("Try again. Type \"help\" for help if needed, and type \"rules\" for rules.\n")
-        return -1, -1
+        return -1, -1, printstr
 
 
     # If we got here, the piecename is valid. Now we handle the coordinates
@@ -373,13 +373,13 @@ def format_input(input_str, turn):
     elif tempx == "I" or tempx == "i":
         tempx = 8
     else:
-        print("\nInvalid x coordinate. x coordinates should be between 0 and 8")
+        printstr = ("\nInvalid x coordinate. x coordinates should be between 0 and 8")
         print("Try again. Type \"help\" for help if needed, and type \"rules\" for rules.\n")
-        return -1, -1
+        return -1, -1, printstr
     if tempy not in ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]:
-        print("\nInvalid y coordinate. y coordinates should be between 0 and 9")
+        printstr = ("\nInvalid y coordinate. y coordinates should be between 0 and 9")
         print("Try again. Type \"help\" for help if needed, and type \"rules\" for rules.\n")
-        return -1, -1
+        return -1, -1, printstr
     coord = [tempx, int(tempy)]
     
     return [piecename, coord]
@@ -457,169 +457,113 @@ def num_to_letter(num):
         # Should never reach here
         return "-1"
 
+OK = 99
 
-def main():
+def chinesechess(moves):
 
     # --------------------------- PLAYERS SETUP ------------------------------
-    
-    # AI1_on and AI2_on are boolean values indicating which AI's to turn on
-    # When both AI_on = False, it is human player vs human player
-    # When both AI_on = True, it is AI vs AI (can set some parameters)
-    # When one AI_on = True and the other is False, it is human player vs AI
-
-    # Get the number of human players
-    while True:    
-        number_of_human_players = '2'
-        if len(number_of_human_players) != 1:
-            print("Invalid number of human players. There can only be 0, 1, or 2.\n")
-            continue
-        if number_of_human_players == '1':
-            print("Beginning the game with 1 human player against an AI\n")
-            # Let player 1 be human for now, but should be completely arbitrary
-            # and open to swapping at any point
-            AI1_on = False
-            AI2_on = True
-            break
-        elif number_of_human_players == '2':
-            print("Beginning the game with 2 human players facing off\n")
-            AI1_on = False
-            AI2_on = False
-            break
-        elif number_of_human_players == '0':
-            print("Beginning the game with 2 AIs facing off\n")
-            AI1_on = True
-            AI2_on = True
-            break
-        else:
-            print("Invalid number of human players. There can only be 0, 1, or 2.\n")
-
-
-
-    # --------------------------- AI PARAMETERS ------------------------------
-
-    # Can set an input depth for each AI in this module, or through user input
-    input_depth1 = 4   # Arbitrary default value
-    input_depth2 = 4   # Arbitrary default value
-    if AI1_on:
-        while True:
-            input_depth1 = str(input("Select the desired difficulty for AI1 (1 - Very Easy, 2 - Easy, 3 - Medium, 4 - Hard): "))
-            if input_depth1 not in ["1", "2", "3", "4"]:
-                print("Invalid difficulty. Needs to be between 1 and 4.\n")
-                continue
-            break
-    if AI2_on:
-        while True:
-            input_depth2 = str(input("Select the desired difficulty for AI2 (1 - Very Easy, 2 - Easy, 3 - Medium, 4 - Hard): "))
-            if input_depth2 not in ["1", "2", "3", "4"]:
-                print("Invalid difficulty. Needs to be between 1 and 4.\n")
-                continue
-            break
-
-
+    # it is human player vs human player
     # ----------------------------- GAME LOOP ---------------------------------
 
     # Build initial Gamestate
     # Player 1 will be Red (True), Player 2 will be Black (False)
     current_state = Gamestate(redpieces, blackpieces, True, None, None)
-    
-    while True:
 
-        # End the function when one player (or AI) wins
+    """
+    return 0: black win
+    return 1: red win 
+    return 2: draw 
+    
+    return OK: ok move 
+    return -1: invalid move 
+    """
+    printstr = ''
+    for l in range(0, len(moves), 5):
+        input_str = moves[l:l+5]
+
         if current_state.won == 1:
-            print("\n\n")
-            print_board_2(update_board_from_grid(current_state.grid))
-            print("\n\nThe game has been won by the Red player!")
-            return 1
+            print("")
+            # print_board_2(update_board_from_grid(current_state.grid))
+            printstr = ("The game has been won by the Red player!")
+            return 1, printstr
         elif current_state.won == -1:
-            print("\n\n")
-            print_board_2(update_board_from_grid(current_state.grid))
-            print("\n\nThe game has been won by the Black player!")
-            return 0
+            print("")
+            # print_board_2(update_board_from_grid(current_state.grid))
+            printstr = ("The game has been won by the Black player!")
+            return 0, printstr
 
         gametree = GameTree(current_state, 1)
         test2 = gametree.move()
         if test2 == "no moves":
             if current_state.turn:
-                print("\n\nThe game has been won by the Black player!")
-                return 0
-            print("\n\nThe game has been won by the Red player!")
-            return 1
+                printstr = ("The game has been won by the Black player!")
+                return 0, printstr
+            printstr = ("The game has been won by the Red player!")
+            return 1, printstr
 
-        print_board_2(update_board_from_grid(current_state.grid))
+        # print_board_2(update_board_from_grid(current_state.grid))
         
         # Take in next move
         if current_state.turn: # Red turn (True)    
-            if AI1_on:
-                print("Red AI is thinking...")
-                gametree = GameTree(current_state, int(input_depth1))
-                test = gametree.move()
-                if test != "no moves":
+            print("> Red player: ", input_str)
+
+            if input_str == "end":
+                printstr = ("Red player has ended the game!")
+                return 0, printstr
+
+            temp = format_input(input_str, current_state.turn)
+            if -1 in temp:
+                printstr = temp[2]
+                return -1, printstr
+            piecename = temp[0]
+            coord = tuple(temp[1])
+
+            if piecename == -1 or coord == -1:
+                # Invalid entry. Print is handled inside the format_input function
+                # Go for another attempted input
+                printstr = temp[2]
+                return -1, printstr
+            else:
+                test = player_move(piecename, coord, current_state)
+                if test == None:
+                    printstr = ("Invalid move. This piece is unable to go to the desired location.")
+                    return -1, printstr
+                else:
+                    # Do I need to use the whole previous_piece, new_piece stuff and built a new Gamestate object?
                     current_state = test
                     x0 = num_to_letter(current_state.move[0].pos.x)
                     y0 = current_state.move[0].pos.y
                     x1 = num_to_letter(current_state.move[1].pos.x)
                     y1 = current_state.move[1].pos.y
-                    printstr = "AI Red Player moved piece {} from {}{} to {}{}".format(current_state.move[0].name, x0, y0, x1, y1)
+                    printstr = "Red Player moved piece {} from {}{} to {}{}".format(current_state.move[0].name, x0, y0, x1, y1)
                     if current_state.eliminated != None:
                         printstr += " and eliminated Black player's piece {}".format(current_state.eliminated.name)
-                    printstr += "\n"
+                    printstr += "\n"                        
                     print(printstr)
-                else:
-                    print("\n\nThe game has been won by the Black player!")
-                    return 0                
-                continue
-
-            else:   # Human player
-
-                input_str = input("\nRed Player, enter the piece code and destination.\nType \"help\" for help, type \"rules\" for rules, and type \"end\" to end the game: ")
-
-                if input_str == "help":
-                    print_help()
-                    continue
-                elif input_str == "rules":
-                    print_rules()
-                    continue
-                elif input_str == "end":
-                    print("Red player has ended the game!")
-                    return 0
-
-                temp = format_input(input_str, current_state.turn)
-                if temp == (-1, -1):
-                    continue
-                piecename = temp[0]
-                coord = tuple(temp[1])
-
-                if piecename == -1 or coord == -1:
-                    # Invalid entry. Print is handled inside the format_input function
-                    # Go for another attempted input
-                    print("Caught in -1 return place")
-                    continue
-                else:
-                    test = player_move(piecename, coord, current_state)
-                    if test == None:
-                        print("Invalid move. This piece is unable to go to the desired location.")
-                        continue
-                    else:
-                        # Do I need to use the whole previous_piece, new_piece stuff and built a new Gamestate object?
-                        current_state = test
-                        x0 = num_to_letter(current_state.move[0].pos.x)
-                        y0 = current_state.move[0].pos.y
-                        x1 = num_to_letter(current_state.move[1].pos.x)
-                        y1 = current_state.move[1].pos.y
-                        printstr = "Red Player moved piece {} from {}{} to {}{}".format(current_state.move[0].name, x0, y0, x1, y1)
-                        if current_state.eliminated != None:
-                            printstr += " and eliminated Black player's piece {}".format(current_state.eliminated.name)
-                        printstr += "\n"                        
-                        print(printstr)
-                        continue
 
                     
         else:   # Black turn (False)
-            if AI2_on:
-                print("Black AI is thinking...")
-                gametree = GameTree(current_state, int(input_depth2))
-                test = gametree.move()
-                if test != "no moves":
+            print("> Black Player: ", input_str)
+
+            if input_str == "end":
+                printstr = ("Black player has ended the game!")
+                return 1, printstr
+            
+            temp = format_input(input_str, current_state.turn)
+            piecename = temp[0]
+            coord = temp[1]
+
+            if piecename == -1 or coord == -1:
+                # Invalid entry. Print is handled inside the format_input function
+                # Go for another attempted input
+                printstr = temp[2]
+                return -1, printstr
+            else:
+                test = player_move(piecename, coord, current_state)
+                if test == None:
+                    printstr = ("Invalid move. This piece is unable to go to the desired location.\n")
+                    return -1, printstr
+                else:                        
                     current_state = test
                     x0 = num_to_letter(current_state.move[0].pos.x)
                     y0 = current_state.move[0].pos.y
@@ -630,49 +574,43 @@ def main():
                         printstr += " and eliminated Red player's piece {}".format(current_state.eliminated.name)
                     printstr += "\n"
                     print(printstr)
-                else:
-                    print("\n\nThe game has been won by the Red player!")
-                    return 1                  
-                continue
-                
-            else:   # Human player
 
-                input_str = input("\nBlack Player, enter the piece code and destination.\nType \"help\" for help, type \"rules\" for rules, and type \"end\" to end the game: ")
+        # print_board_2(update_board_from_grid(current_state.grid))
 
-                if input_str == "help":
-                    print_help()
-                    continue
-                elif input_str == "rules":
-                    print_rules()
-                    continue
-                elif input_str == "end":
-                    print("Black player has ended the game!")
-                    return 1
-                
-                temp = format_input(input_str, current_state.turn)
-                piecename = temp[0]
-                coord = temp[1]
+    if current_state.won == 1:
+        print("")
+        print_board_2(update_board_from_grid(current_state.grid))
+        printstr = ("The game has been won by the Red player!")
+        return 1, printstr
+    elif current_state.won == -1:
+        print("")
+        print_board_2(update_board_from_grid(current_state.grid))
+        printstr = ("The game has been won by the Black player!")
+        return 0, printstr
 
-                if piecename == -1 or coord == -1:
-                    # Invalid entry. Print is handled inside the format_input function
-                    # Go for another attempted input
-                    continue
-                else:
-                    test = player_move(piecename, coord, current_state)
-                    if test == None:
-                        print("Invalid move. This piece is unable to go to the desired location.\n")
-                        continue
-                    else:                        
-                        current_state = test
-                        x0 = num_to_letter(current_state.move[0].pos.x)
-                        y0 = current_state.move[0].pos.y
-                        x1 = num_to_letter(current_state.move[1].pos.x)
-                        y1 = current_state.move[1].pos.y
-                        printstr = "Black Player moved piece {} from {}{} to {}{}".format(current_state.move[0].name, x0, y0, x1, y1)
-                        if current_state.eliminated != None:
-                            printstr += " and eliminated Red player's piece {}".format(current_state.eliminated.name)
-                        printstr += "\n"
-                        print(printstr)
-    return
+    gametree = GameTree(current_state, 1)
+    test2 = gametree.move()
+    if test2 == "no moves":
+        if current_state.turn:
+            printstr = ("The game has been won by the Black player!")
+            return 0, printstr
+        printstr = ("The game has been won by the Red player!")
+        return 1, printstr
 
-main()
+    return OK, printstr
+
+
+# if __name__ == "__main__":
+#     # Unit test
+#     with open('unit_test.txt', 'r') as f:
+#         moves = f.read()
+#         res =  main(moves) 
+#         print('res', res)
+#         if len(res) == 2: 
+#             code = res[0]
+#             msg = res[1]
+#             print("code = ", code)
+#             print("msg = ", msg)
+
+#         else:
+#             print("HANDLE THIS CASE", res )

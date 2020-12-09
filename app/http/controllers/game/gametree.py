@@ -1,5 +1,5 @@
-from pieces import *
-from state_representation import *
+from app.http.controllers.game.pieces import *
+from app.http.controllers.game.state_representation import *
 from random import shuffle
 class GameTree(object):
     '''
