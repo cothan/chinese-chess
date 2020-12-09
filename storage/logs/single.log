@@ -28,3 +28,7 @@
 2020-12-09 00:04:10 - ERROR - AttributeError in /home/cothan/Work/2020/fall/isa681/chinese-chess2/app/http/controllers/ChessController.py on line 37
 2020-12-09 00:06:07 - ERROR - ContainerError in /home/cothan/Work/2020/fall/isa681/chinese-chess2/bootstrap/start.py on line 38
 2020-12-09 00:06:30 - ERROR - ContainerError in /home/cothan/Work/2020/fall/isa681/chinese-chess2/bootstrap/start.py on line 38
+2020-12-09 06:54:05 - ERROR - AttributeError in /home/cothan/Work/2020/fall/isa681/chinese-chess2/app/http/controllers/ChessController.py on line 44
+2020-12-09 06:54:16 - ERROR - AttributeError in /home/cothan/Work/2020/fall/isa681/chinese-chess2/app/http/controllers/ChessController.py on line 45
+2020-12-09 07:07:24 - ERROR - TemplateSyntaxError in /home/cothan/Work/2020/fall/isa681/chinese-chess2/resources/templates/game.html on line 26
+2020-12-09 08:05:23 - ERROR - SyntaxError in /home/cothan/Work/2020/fall/isa681/chinese-chess2/bootstrap/start.py on line 38

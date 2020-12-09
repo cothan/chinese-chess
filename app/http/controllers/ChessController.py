@@ -1,5 +1,6 @@
 """A ChessController Module."""
 
+from app.http.controllers.GameController import current_time
 from app.Table import Table
 from masonite.request import Request
 from masonite.view import View
@@ -24,11 +25,15 @@ class ChessController(Controller):
         table = Table.where('token', token).limit(1).first()
         if not table:
             return "Token is not exists"
+        
+        if current_time() - table.last_move_timestamp > 300: 
+            table.completed = True
+            table.save()
 
         print('============', table.completed)
         return view.render('chess', {'table': table})
 
-    def move(self, request: Request):
+    def move(self, request: Request, view: View):
         # Input move in the game, turn base so we have to check
         token = request.param('token')
 
@@ -36,6 +41,10 @@ class ChessController(Controller):
 
         if not table:
             return "Token is not exists"
+
+        # Check time out 
+        if table.completed:
+            return "Time out"
 
         if table.next_id != request.user().id:
             return "Not your turn"

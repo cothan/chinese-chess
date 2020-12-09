@@ -8,10 +8,12 @@ from app.Table import Table
 from app.User import User
 
 from secrets import token_hex
-from time import time 
+from time import time
+
 
 def current_time():
     return int(time())
+
 
 class GameController(Controller):
     """GameController Controller Class."""
@@ -24,15 +26,14 @@ class GameController(Controller):
         """
         self.request = request
 
-
     def show(self, view: View, request: Request):
         """
         Show all users so player can pick one user to play with
         """
         users = User.all()
-        
-        return view.render("game", {'users': users, 'name': request.user().name})
-    
+
+        return view.render("game", {'users': users, 'name': request.user().name, 'table': Table.all(), "cuser_id" : request.user().id} )
+
     def store(self, request: Request, view: View):
         """
         Generate a new token, return to chess/@token/ @show
@@ -42,37 +43,36 @@ class GameController(Controller):
 
         if not friend_id:
             return 'Username is not exists'
-        
-        friend_id = friend_id.id 
-       
+
+        friend_id = friend_id.id
+
         token = token_hex(16)
-       
+
         Table.create(
-            user_id = request.user().id,
-            oppo_id = friend_id,
-            token = token, 
-            completed = False,
-            last_move_timestamp = current_time(),
-            next_id = request.user().id,
-            move = '',
-        )       
+            user_id=request.user().id,
+            oppo_id=friend_id,
+            token=token,
+            completed=False,
+            last_move_timestamp=current_time(),
+            next_id=request.user().id,
+            move='',
+        )
         return request.redirect("/play/@token", {'token': token})
 
     def resume(self, request: Request, view: View):
-        token = request.input('token', clean=True)
-        
+        token = request.input('token', clean=True).strip()
+
         table = Table.where('token', token).limit(1).first()
+        print(table, '===========')
         if not table:
             return "token is not exist"
-        
+
         # Check timestamp
         timestamp = current_time() - table.last_move_timestamp
-        
-        if timestamp > 300: 
+
+        if timestamp > 300:
             table.completed = True
+            table.save()
             return "Timeout"
-        
+
         return request.redirect("/play/@token", {'token': token})
-
-
-

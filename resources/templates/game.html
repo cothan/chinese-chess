@@ -22,5 +22,22 @@
 
     <input type="submit" value="Resume">
 </form>
-{% else %}
-<a href="/login">Please Login</a> {% endif %}
+
+<a>{% for i in table %}
+    
+    {% if i.oppo_id == cuser_id and i.completed == False %}
+        Current game token is: {{ i.token }}<br>
+    {% endif %}
+    
+    {% if i.completed == True %} 
+        <br> {{ i.token }}: {{ i.user_id }} vs {{ i.oppo_id }} <br> {{ i.move }} <br>
+    {% endif %}
+    
+    
+    
+    {% endfor %} </a>
+
+
+
+
+{% else %} <a href="/login">Please Login</a> {% endif %}

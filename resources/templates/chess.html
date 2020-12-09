@@ -3,6 +3,8 @@
 <br>
 <a>Last move timestamp: </a> {{ table.last_move_timestamp }}
 <br> <a> Your game token:</a> {{ table.token }}
+<br>
+<a> Time out: </a> {{ table.completed }}
 <hr>
 
 <form action="/play/{{ table.token }}/move" method="POST">
