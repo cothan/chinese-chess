@@ -7,7 +7,7 @@ ROUTES = [
     
     Get('/game', 'GameController@show'),
     Post('/game/create', 'GameController@store'),
-    Post('/game/resume', 'GameController@resume'),
+    # Post('/game/resume', 'GameController@resume'),
 
     Get('/play/@token', 'ChessController@show'),
     Post('/play/@token/move', 'ChessController@move')

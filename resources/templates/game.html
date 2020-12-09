@@ -18,6 +18,7 @@
 
 <form action="/game/create" method="POST">
     {{ csrf_field }}
+    {{ back() }}
 
     <label> To create a new game, match a friend </label>
     <input type="name" name="friend"><br>
@@ -25,20 +26,25 @@
     <input type="submit" value="Match">
 </form>
 
-
+<!-- 
 <form action="/game/resume" method="POST">
     {{ csrf_field }}
+    {{ back() }}
+
 
     <label> Enter Token </label>
     <input type="name" name="token"><br>
 
     <input type="submit" value="Resume">
-</form>
+</form> 
+-->
 
-<a>{% for i in table %}
+<a>
+    {% for i in table %}
     
     {% if i.completed == False %}
     {% if name in (i.oppo_id, i.user_id) %}
+        <hr>
         Current game token between you with
             {% if name == i.oppo_id %}
                 {{ i.user_id }}
@@ -47,24 +53,28 @@
             {% endif %}
 
 
-            is: {{ i.token }}
+            is: <a href="/play/{{ i.token }}" >{{ i.token }}</a>
         
         {% endif %}
-        <br>
+        <hr>
     {% endif %}
 
+    <hr>
     {% if i.completed == True %} 
         <br> Game Token: {{ i.token }}
-        <br> {{ i.user_id }} vs {{ i.oppo_id }} <br> 
-        <hr> {{ i.move }} <hr>
+        <br> Winner: {{ i.winner }}
+        <br> {{ i.user_id }} vs {{ i.oppo_id }} 
+        <br> Moves: {{ i.move }} 
         <br>
-    {% endif %}
+        {% endif %}
+    <hr>
     
     
     
     {% endfor %} </a>
 
-
 {% endblock %}
-
-{% else %} <a href="/login">Please Login</a> {% endif %}
+    
+{% else %}     
+    <a href="/login">Please Login</a> 
+{% endif %}

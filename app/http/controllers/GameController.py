@@ -72,20 +72,21 @@ class GameController(Controller):
         )
         return request.redirect("/play/@token", {'token': token})
 
-    def resume(self, request: Request, view: View):
-        token = request.input('token', clean=True).strip()
 
-        table = Table.where('token', token).limit(1).first()
-        print(table, '===========')
-        if not table:
-            return "token is not exist"
+    # def resume(self, request: Request, view: View):
+    #     token = request.input('token', clean=True).strip()
 
-        # Check timestamp
-        timestamp = current_time() - table.last_move_timestamp
+    #     table = Table.where('token', token).limit(1).first()
+    #     print(table, '===========')
+    #     if not table:
+    #         return "token is not exist"
 
-        if timestamp > 300:
-            table.completed = True
-            table.save()
-            return view.render("invalid", {"message": "Time Out"})
+    #     # Check timestamp
+    #     timestamp = current_time() - table.last_move_timestamp
 
-        return request.redirect("/play/@token", {'token': token})
+    #     if timestamp > 300:
+    #         table.completed = True
+    #         table.save()
+    #         return view.render("invalid", {"message": "Time Out"})
+
+    #     return request.redirect("/play/@token", {'token': token})
