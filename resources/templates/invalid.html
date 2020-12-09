@@ -1,0 +1,30 @@
+{% if auth() %} 
+{% extends 'auth/base.html' %}
+
+
+{% block css %}
+<!-- Application CSS -->
+<link href="/static/style.css" rel="stylesheet" type="text/css"> 
+{% endblock %} 
+
+{% block content %}
+<div class="container text-center">
+    <div class="title m-b-md">
+        {{ message }}
+    </div>
+
+    <div class="links">
+        <a href="/game">Create a New Game</a>
+    </div>
+    <br><br>
+
+</div>
+
+{% endblock %}
+
+
+{% else %}
+
+<a href="/login">Please Login</a> 
+
+{% endif %}

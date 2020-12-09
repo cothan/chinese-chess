@@ -14,6 +14,10 @@ class CreateUsersTable(Migration):
             table.timestamp('verified_at').nullable()
             table.timestamps()
 
+            table.integer('win').unsigned().nullable()
+            table.integer('lose').unsigned().nullable()
+            table.integer('draw').unsigned().nullable()
+
     def down(self):
         """Revert the migrations."""
         self.schema.drop('users')

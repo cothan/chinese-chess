@@ -31,30 +31,43 @@ class GameController(Controller):
         Show all users so player can pick one user to play with
         """
         users = User.all()
+        table = Table.all()
+        
+        if request.user():
+            cur_user = request.user().email
+            return view.render("game", {'users': users, 'name': cur_user, 'table': table, "cuser_id" : cur_user} )
+        else:
+            return view.render("invalid", {"message": 'Please log in'})
 
-        return view.render("game", {'users': users, 'name': request.user().name, 'table': Table.all(), "cuser_id" : request.user().id} )
 
     def store(self, request: Request, view: View):
         """
         Generate a new token, return to chess/@token/ @show
         """
-        friend = request.input('friend', clean=True)
-        friend_id = User.where('name', friend).limit(1).first()
+        cur_user = request.user()
 
-        if not friend_id:
-            return 'Username is not exists'
+        friend = request.input('friend', clean=True).strip()
+        friend_email = User.where('email', friend).limit(1).first()
 
-        friend_id = friend_id.id
+        if not friend_email:
+            return view.render("invalid", {"message": 'Username is not exists'})
+
+        friend_email = friend_email.email
+        user_email = cur_user.email
+
+        if friend_email == user_email:
+            return view.render("invalid", {"message": 'You cannot play alone'})
 
         token = token_hex(16)
 
         Table.create(
-            user_id=request.user().id,
-            oppo_id=friend_id,
+            owner  = user_email,
+            user_id=user_email,
+            oppo_id=friend_email,
             token=token,
             completed=False,
             last_move_timestamp=current_time(),
-            next_id=request.user().id,
+            next_id=user_email,
             move='',
         )
         return request.redirect("/play/@token", {'token': token})
@@ -73,6 +86,6 @@ class GameController(Controller):
         if timestamp > 300:
             table.completed = True
             table.save()
-            return "Timeout"
+            return view.render("invalid", {"message": "Time Out"})
 
         return request.redirect("/play/@token", {'token': token})

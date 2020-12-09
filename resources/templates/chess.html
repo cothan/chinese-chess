@@ -1,10 +1,17 @@
 {% if auth() %}
+
+{% extends 'auth/base.html' %}
+
+{% block content %}
+
+
 <a> All moves in this game: </a> {{ table.move }}
 <br>
 <a>Last move timestamp: </a> {{ table.last_move_timestamp }}
 <br> <a> Your game token:</a> {{ table.token }}
-<br>
-<a> Time out: </a> {{ table.completed }}
+<br> <a> Your turn: {{ your_turn }}</a>
+<br> <a> Time out True/False: </a> {{ table.completed }}
+<br> <a> Time left: {{ timeleft }} </a>
 <hr>
 
 <form action="/play/{{ table.token }}/move" method="POST">
@@ -15,5 +22,11 @@
 
     <input type="submit" value="Submit">
 </form>
+
+{% endblock %}
+
+
 {% else %}
 <a href="/login">Please Login</a> {% endif %}
+
+

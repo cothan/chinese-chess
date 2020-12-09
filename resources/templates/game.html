@@ -1,7 +1,19 @@
 {% if auth() %}
+
+{% extends 'auth/base.html' %}
+
+
+{% block content %}
+
+
 <a> You are: {{ name }}</a>
 <hr>
-<a> Other players (including you) </a> {% for user in users %} {{ user.name }} <br> {% endfor %}
+<a> Other players:</a><br>
+{% for user in users %} 
+{% if user.email != name %}
+{{ user.email }}<br> 
+{% endif %}
+{% endfor %}
 <hr>
 
 <form action="/game/create" method="POST">
@@ -25,12 +37,27 @@
 
 <a>{% for i in table %}
     
-    {% if i.oppo_id == cuser_id and i.completed == False %}
-        Current game token is: {{ i.token }}<br>
+    {% if i.completed == False %}
+    {% if name in (i.oppo_id, i.user_id) %}
+        Current game token between you with
+            {% if name == i.oppo_id %}
+                {{ i.user_id }}
+            {% else %}
+                {{ i.oppo_id }}
+            {% endif %}
+
+
+            is: {{ i.token }}
+        
+        {% endif %}
+        <br>
     {% endif %}
-    
+
     {% if i.completed == True %} 
-        <br> {{ i.token }}: {{ i.user_id }} vs {{ i.oppo_id }} <br> {{ i.move }} <br>
+        <br> Game Token: {{ i.token }}
+        <br> {{ i.user_id }} vs {{ i.oppo_id }} <br> 
+        <hr> {{ i.move }} <hr>
+        <br>
     {% endif %}
     
     
@@ -38,6 +65,6 @@
     {% endfor %} </a>
 
 
-
+{% endblock %}
 
 {% else %} <a href="/login">Please Login</a> {% endif %}

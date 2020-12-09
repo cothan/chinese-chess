@@ -12,16 +12,19 @@ class CreateChessesTable(Migration):
 
             table.string('token')
 
-            table.integer('user_id').unsigned()
-            table.foreign('user_id').references('id').on('users')
+            table.string('user_id')
+            table.foreign('user_id').references('email').on('users')
 
-            table.integer('oppo_id').unsigned()
-            table.foreign('oppo_id').references('id').on('users')
+            table.string('oppo_id')
+            table.foreign('oppo_id').references('email').on('users')
 
-            table.integer('next_id').unsigned()
+            table.string('next_id')
 
             table.string('move').nullable()
             table.boolean('completed')
+
+            table.string('owner')
+
             table.integer('last_move_timestamp').unsigned()
 
             table.timestamps()
