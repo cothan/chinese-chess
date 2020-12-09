@@ -6,6 +6,7 @@ from masonite.request import Request
 from masonite.validation import Validator
 from masonite.view import View
 
+from app.User import User
 
 class RegisterController:
     """The RegisterController class."""
@@ -53,9 +54,16 @@ class RegisterController:
                 breach=False,
             ),
         )
+        if User.where('email', request.input("email")).limit(1).first(): 
+            print('error', errors)
+            errors.merge( {'email': ["Email was used by someone else"]} )
+            print('error', errors)
+            # return request.back().with_errors(errors).with_input()
 
         if errors:
             return request.back().with_errors(errors).with_input()
+
+
 
         user = auth.register(
             {
