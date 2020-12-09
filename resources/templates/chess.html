@@ -4,8 +4,8 @@
 
 {% block content %}
 
-
-<a> All moves in this game: </a> {{ table.move }}
+<br> <a> Comment: {{table.msg}} </a>
+<br> <a> All moves in this game: </a> {{ table.move }}
 <br>
 <a>Last move timestamp: </a> {{ table.last_move_timestamp }}
 <br> <a> Your game token:</a> {{ table.token }}
@@ -16,6 +16,7 @@
 
 <form action="/play/{{ table.token }}/move" method="POST">
     {{ csrf_field }}
+    {{ back() }}
 
     <label> Enter new move </label>
     <input type="name" name="move"><br>

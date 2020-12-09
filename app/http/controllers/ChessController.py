@@ -5,6 +5,8 @@ from app.Table import Table
 from masonite.request import Request
 from masonite.view import View
 from masonite.controllers import Controller
+from app.http.controllers.game.game import chinesechess
+import string
 
 
 class ChessController(Controller):
@@ -24,16 +26,20 @@ class ChessController(Controller):
 
         table = Table.where('token', token).limit(1).first()
 
+        if not request.user():
+            return view.render("invalid", {"message": 'Please login first'})
+
         # Non exist token
         if not table:
             return view.render("invalid", {"message": 'Your Token is not existed'})
 
-        if not request.user():
-            return view.render("invalid", {"message": 'Please login first'})
-
         # Exist token, but no permission
         if request.user().email not in (table.user_id, table.oppo_id):
             return view.render("invalid", {"message": 'You cannot view this game'})
+
+        # Check time out
+        if table.completed:
+            return view.render("invalid", {"message": 'Time out'})
 
         if current_time() - table.last_move_timestamp > 300:
             table.completed = True
@@ -47,25 +53,61 @@ class ChessController(Controller):
         return view.render('chess', {'table': table, 'your_turn': your_turn, 'timeleft': timeleft})
 
     def move(self, request: Request, view: View):
-    # Input move in the game, turn base so we have to check
         token = request.param('token')
+
+        if not request.user():
+            return view.render("invalid", {"message": 'Please login first'})
 
         table = Table.where('token', token).limit(1).first()
 
+        # Check token exist
         if not table:
             return view.render("invalid", {"message": 'Your Token is not existed'})
+
+        # Exist token, but no permission
+        if request.user().email not in (table.user_id, table.oppo_id):
+            return view.render("invalid", {"message": 'You cannot view this game'})
 
         # Check time out
         if table.completed:
             return view.render("invalid", {"message": 'Time out'})
 
-
+        # Turn base constrain
         if table.next_id != request.user().email:
             return view.render("invalid", {"message": 'Please wait for your turn'})
 
-        # Update game
+        
+        # Clean up space
         move = request.input('move')
-        table.move += request.input('move')
+        move = move.strip().lstrip()
+        
+        if not all(i in (string.ascii_letters + string.digits) for i in  move):
+            return view.render('invalid', {"message": "Please enter valid move"})
+
+        moves = table.move + move
+
+        code, msg = chinesechess(moves)
+        if code == -1: 
+            # Illegal move
+            table.msg = 'Illegal move'
+            return view.render('invalid', {"message": msg})
+        elif code == 0:
+            # Black win
+            table.winner = table.next_id
+            table.completed = True
+        elif code == 1:
+            # Red win
+            table.winner = table.next_id
+            table.completed = True
+        elif code == 2:
+            # Draw
+            table.winner = 'Draw'
+            table.completed = True
+        else:
+            # Legal move
+            table.msg = msg
+
+        table.move = moves
 
         if table.next_id == table.user_id:
             # Turn A
@@ -77,7 +119,5 @@ class ChessController(Controller):
         table.last_move_timestamp = current_time()
 
         table.save()
-
-        # TODO: update game in game functionalities
 
         return request.redirect('/play/@token', {'token': token})
