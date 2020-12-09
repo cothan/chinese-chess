@@ -44,7 +44,6 @@
     
     {% if i.completed == False %}
     {% if name in (i.oppo_id, i.user_id) %}
-        <hr>
         Current game token between you with
             {% if name == i.oppo_id %}
                 {{ i.user_id }}
@@ -56,10 +55,7 @@
             is: <a href="/play/{{ i.token }}" >{{ i.token }}</a>
         
         {% endif %}
-        <hr>
     {% endif %}
-
-    <hr>
     {% if i.completed == True %} 
         <br> Game Token: {{ i.token }}
         <br> Winner: {{ i.winner }}
