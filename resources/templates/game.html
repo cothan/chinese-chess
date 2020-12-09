@@ -1,23 +1,26 @@
-{% if auth() %} {% for user in users %} {{ user.name }}
-<hr> {% endfor %}
+{% if auth() %}
+<a> You are: {{ name }}</a>
+<hr>
+<a> Other players (including you) </a> {% for user in users %} {{ user.name }} <br> {% endfor %}
+<hr>
 
 <form action="/game/create" method="POST">
     {{ csrf_field }}
 
-    <label> Pick a friend name </label>
+    <label> To create a new game, match a friend </label>
     <input type="name" name="friend"><br>
 
-    <input type="submit" value="Post!">
+    <input type="submit" value="Match">
 </form>
 
 
 <form action="/game/resume" method="POST">
     {{ csrf_field }}
 
-    <label> Enter Game ID </label>
-    <input type="name" name="game_id"><br>
+    <label> Enter Token </label>
+    <input type="name" name="token"><br>
 
-    <input type="submit" value="Post!">
+    <input type="submit" value="Resume">
 </form>
 {% else %}
 <a href="/login">Please Login</a> {% endif %}

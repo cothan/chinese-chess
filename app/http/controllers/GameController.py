@@ -54,6 +54,7 @@ class GameController(Controller):
             completed = False,
             last_move_timestamp = current_time(),
             next_id = request.user().id,
+            move = '',
         )       
         return request.redirect("/play/@token", {'token': token})
 
