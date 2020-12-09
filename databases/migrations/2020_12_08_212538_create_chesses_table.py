@@ -25,6 +25,11 @@ class CreateChessesTable(Migration):
 
             table.string('owner')
 
+            table.string('winner').nullable()
+            table.foreign('winner').references('email').on('users')
+
+            table.string('msg').nullable()
+
             table.integer('last_move_timestamp').unsigned()
 
             table.timestamps()
