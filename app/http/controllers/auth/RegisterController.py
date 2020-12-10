@@ -47,9 +47,9 @@ class RegisterController:
             validate.email("email"),
             validate.strong(
                 "password",
-                length=1,
-                special=0,
-                uppercase=0,
+                length=8,
+                special=1,
+                uppercase=1,
                 # breach=True checks if the password has been breached before.
                 # Requires 'pip install pwnedapi'
                 breach=False,
