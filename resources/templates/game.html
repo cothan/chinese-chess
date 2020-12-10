@@ -23,7 +23,7 @@
     <label> To create a new game, match a friend </label>
     <input type="name" name="friend"><br>
 
-    <input type="submit" value="Match">
+    <input type="submit" value="New Match">
 </form>
 
 <!-- 
@@ -39,7 +39,7 @@
 </form> 
 -->
 
-<a>
+<a><hr>
     {% for i in table %}
     
     {% if i.completed == False %}
@@ -53,22 +53,26 @@
 
 
             is: <a href="/play/{{ i.token }}" >{{ i.token }}</a>
-        
+            <br>
         {% endif %}
     {% endif %}
+    {% endfor %}
+</a>
+    {% for i in table %}
     {% if i.completed == True %} 
+        <hr>
         <br> Game Token: {{ i.token }}
         <br> Winner: {{ i.winner }}
         <br> {{ i.user_id }} vs {{ i.oppo_id }} 
         <br> Moves: {{ i.move }} 
         <br>
-        <hr>
 
     {% endif %}
     
     
     
-    {% endfor %} </a>
+    {% endfor %} 
+</a>
 
 {% endblock %}
     
