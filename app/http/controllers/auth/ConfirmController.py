@@ -48,16 +48,19 @@ class ConfirmController:
                 user = auth.auth_model.find(tokenParts[0])
 
                 if user.verified_at is None:
-                    timestamp = datetime.datetime.fromtimestamp(float(tokenParts[1]))
+                    timestamp = datetime.datetime.fromtimestamp(
+                        float(tokenParts[1]))
                     now = datetime.datetime.now()
-                    timestamp_plus_10 = timestamp + datetime.timedelta(minutes=10)
+                    timestamp_plus_10 = timestamp + \
+                        datetime.timedelta(minutes=10)
 
                     if now < timestamp_plus_10:
                         user.verified_at = datetime.datetime.now()
                         user.save()
 
                         return view.render(
-                            "auth/confirm", {"app": config("application"), "Auth": auth}
+                            "auth/confirm", {"app": config(
+                                "application"), "Auth": auth}
                         )
 
         return view.render("auth/error", {"app": config("application"), "Auth": auth})

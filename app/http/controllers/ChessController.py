@@ -76,18 +76,17 @@ class ChessController(Controller):
         if table.next_id != request.user().email:
             return view.render("invalid", {"message": 'Please wait for your turn'})
 
-        
         # Clean up space
         move = request.input('move')
         move = move.strip().lstrip()
-        
-        if not all(i in (string.ascii_letters + string.digits) for i in  move):
+
+        if not all(i in (string.ascii_letters + string.digits) for i in move):
             return view.render('invalid', {"message": "Please enter valid move"})
 
         moves = table.move + move
 
         code, msg = chinesechess(moves)
-        if code == -1: 
+        if code == -1:
             # Illegal move
             table.msg = 'Illegal move'
             return view.render('invalid', {"message": msg})

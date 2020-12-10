@@ -19,7 +19,8 @@ class PasswordController:
 
     def reset(self, view: View, request: Request, auth: Auth):
         token = request.param("token")
-        user = AUTH["guards"]["web"]["model"].where("remember_token", token).first()
+        user = AUTH["guards"]["web"]["model"].where(
+            "remember_token", token).first()
         if user:
             return view.render(
                 "auth/reset",
@@ -27,7 +28,8 @@ class PasswordController:
             )
 
     def send(self, request: Request, session: Session, mail: Mail, validate: Validator):
-        errors = request.validate(validate.required("email"), validate.email("email"))
+        errors = request.validate(validate.required(
+            "email"), validate.email("email"))
 
         if errors:
             return request.back().with_errors(errors)
@@ -42,7 +44,8 @@ class PasswordController:
             message = "Please visit {}/password/{}/reset to reset your password".format(
                 env("SITE", "http://localhost:8000"), user.remember_token
             )
-            mail.subject("Reset Password Instructions").to(user.email).send(message)
+            mail.subject("Reset Password Instructions").to(
+                user.email).send(message)
 
         session.flash(
             "success",

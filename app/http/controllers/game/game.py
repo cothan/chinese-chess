@@ -15,59 +15,58 @@ def update_board_from_pieces(total_pieces):
         into a nested array game board, which is then returned.
 
         For example, "red.general.0" becomes "RG0".
-        
+
         This is more or less a helper function for the print function below.
     '''
-    
+
     board = [[0]*10 for _ in range(9)]
     for piece in total_pieces:
-            tempcolour = piece.name.split('.')[0].lower()
-            tempname = piece.name.split('.')[1].lower()
-            tempnumber = piece.name.split('.')[2]
+        tempcolour = piece.name.split('.')[0].lower()
+        tempname = piece.name.split('.')[1].lower()
+        tempnumber = piece.name.split('.')[2]
 
-            # Get abbreviated colour code
-            if tempcolour == "red":
-                tempcolour = "R"
-            elif tempcolour == "black":
-                tempcolour = "B"
-            else:
-                raise("Invalid Colour: ")
-                print(tempcolour)
-                return -1
+        # Get abbreviated colour code
+        if tempcolour == "red":
+            tempcolour = "R"
+        elif tempcolour == "black":
+            tempcolour = "B"
+        else:
+            raise("Invalid Colour: ")
+            print(tempcolour)
+            return -1
 
-            # Get abbreviated name code
-            # NOTE: Chariot is 'R' because it is pretty much a rook and 'C' was
-            #       already taken by Cannon
-            if tempname == "general":
-                tempname = "G"
-            elif tempname == "advisor":
-                tempname = "A"
-            elif tempname == "elephant":
-                tempname = "E"
-            elif tempname == "horse":
-                tempname = "H"
-            elif tempname == "chariot":
-                tempname = "R"
-            elif tempname == "cannon":
-                tempname = "C"
-            elif tempname == "soldier":
-                tempname = "S"
-            else:
-                raise("Invalid Name: ")
-                print(tempname)
-                return -1
+        # Get abbreviated name code
+        # NOTE: Chariot is 'R' because it is pretty much a rook and 'C' was
+        #       already taken by Cannon
+        if tempname == "general":
+            tempname = "G"
+        elif tempname == "advisor":
+            tempname = "A"
+        elif tempname == "elephant":
+            tempname = "E"
+        elif tempname == "horse":
+            tempname = "H"
+        elif tempname == "chariot":
+            tempname = "R"
+        elif tempname == "cannon":
+            tempname = "C"
+        elif tempname == "soldier":
+            tempname = "S"
+        else:
+            raise("Invalid Name: ")
+            print(tempname)
+            return -1
 
-            # Make sure number code is valid
-            if tempnumber[0] < '0' or tempnumber[0] > '4':
-                raise("Invalid Number: ")
-                print(tempname)
-                return -1
+        # Make sure number code is valid
+        if tempnumber[0] < '0' or tempnumber[0] > '4':
+            raise("Invalid Number: ")
+            print(tempname)
+            return -1
 
-            # Append the codes into a string for the simple name
-            # Store this simple name in the board
-            board[piece.pos.x][piece.pos.y] = tempcolour + tempname + tempnumber
+        # Append the codes into a string for the simple name
+        # Store this simple name in the board
+        board[piece.pos.x][piece.pos.y] = tempcolour + tempname + tempnumber
     return board
-
 
 
 def update_board_from_grid(grid):
@@ -76,10 +75,10 @@ def update_board_from_grid(grid):
         into a nested array game board, which is then returned.
 
         For example, "red.general.0" becomes "RG0".
-        
+
         This is more or less a helper function for the print function below.
     '''
-    
+
     board = [[0]*10 for _ in range(9)]
     for i in range(len(grid)):
         for j in range(len(grid[0])):
@@ -129,7 +128,7 @@ def update_board_from_grid(grid):
 
                 # Append the codes into a string for the simple name
                 # Store this simple name in the board
-                board[i][j] = tempcolour + tempname + tempnumber                
+                board[i][j] = tempcolour + tempname + tempnumber
     return board
 
 
@@ -139,7 +138,7 @@ def print_board_2(board):
         abbreviated names, and a visual depication of the river and tent area.
 
         For example, starting board prints as follows:
-        
+
 0      RR0    RH0    RE0   |RA0    RG0    RA1|   RE1    RH1    RR1    
 1      0      0      0     |0      0      0  |   0      0      0      
 2      0      RC0    0     |0______0______0__|   0      RC1    0      
@@ -155,9 +154,9 @@ def print_board_2(board):
 9      BR0    BH0    BE0   |BA0    BG0    BA1|   BE1    BH1    BR1    
 
        A      B      C      D      E      F      G      H      I
-       
+
     '''
-    
+
     row = 0
     riverflag = False
     while row < len(board[0]):
@@ -174,7 +173,7 @@ def print_board_2(board):
             s += str(board[col][row])
 
             # Print upper and lower tent
-            if (row == 2 or row == 6) and col in range (3,6):
+            if (row == 2 or row == 6) and col in range(3, 6):
                 if str(board[col][row]) == "0":
                     s += ('__')
                 if col == 5 and row == 2:
@@ -204,10 +203,11 @@ def print_board_2(board):
 
 def print_help():
     ''' Helper function for printing the help table. No parameters or return.'''
-    
+
     print("------------------------------------ HELP -------------------------------------- ")
     print("A move is made by a user input of the form:\n\t- 3 character piece code\n\t- Coordinates of the position where that piece will move\n\t(these two arguments are on the same line, separated by a space)\n")
-    print("The character code is of the following form: [player colour][piece name letter][piece number]\n")
+    print(
+        "The character code is of the following form: [player colour][piece name letter][piece number]\n")
     print("The player colour is either 'R' for red, or 'B' for black.\nA player can only move his/her own pieces.\n")
     print("The piece name letter is a letter corresponding to the piece type:\n\tG = general\n\tA = advisor\n\tE = elephant\n\tH = horse\n\tR = chariot\n\tC = cannon\n\tS = soldier\n")
     print("The piece number differentiates different pieces of the same type.")
@@ -244,21 +244,24 @@ def format_input(input_str, turn):
     Expect input of the form "RA1 E1" (not case sensitive)
     If successful, this function returns piecename and the coordinate as a list.
     '''
-    input_str = input_str[:3]  + ' ' + input_str[3:]
+    input_str = input_str[:3] + ' ' + input_str[3:]
     input_str = input_str.split(" ")
     if len(input_str) != 2:
         printstr = ("\nIncorrect number of input arguments.")
-        print("Try again. Type \"help\" for help if needed, and type \"rules\" for rules.\n")
+        print(
+            "Try again. Type \"help\" for help if needed, and type \"rules\" for rules.\n")
         return -1, -1, printstr
 
     if len(input_str[0]) != 3:
         printstr = ("\nIncorrect piece code length.")
-        print("Try again. Type \"help\" for help if needed, and type \"rules\" for rules.\n")
+        print(
+            "Try again. Type \"help\" for help if needed, and type \"rules\" for rules.\n")
         return -1, -1, printstr
 
     if len(input_str[1]) != 2:
         printstr = ("\nIncorrect coordinate input length.")
-        print("Try again. Type \"help\" for help if needed, and type \"rules\" for rules.\n")
+        print(
+            "Try again. Type \"help\" for help if needed, and type \"rules\" for rules.\n")
         return -1, -1, printstr
 
     # The lengths are good, now checking for valid input and building piecename
@@ -270,88 +273,103 @@ def format_input(input_str, turn):
     piecename = ""
     coord = []
 
-
     # Colour
     if tempcolour == "R":
         if not turn:
             printstr = ("\nCannot move opponent's pieces.")
-            print("Try again. Type \"help\" for help if needed, and type \"rules\" for rules.\n")
+            print(
+                "Try again. Type \"help\" for help if needed, and type \"rules\" for rules.\n")
             return -1, -1, printstr
         piecename += "red."
     elif tempcolour == "B":
         if turn:
             printstr = ("\nCannot move opponent's pieces.")
-            print("Try again. Type \"help\" for help if needed, and type \"rules\" for rules.\n")
+            print(
+                "Try again. Type \"help\" for help if needed, and type \"rules\" for rules.\n")
             return -1, -1, printstr
         piecename += "black."
     else:
         printstr = ("\nInvalid piece colour.")
-        print("Try again. Type \"help\" for help if needed, and type \"rules\" for rules.\n")
+        print(
+            "Try again. Type \"help\" for help if needed, and type \"rules\" for rules.\n")
         return -1, -1, printstr
-
 
     # Piece name letter and number
     if tempname == "G":
         piecename += "general."
         if tempnumber != "0":
-            printstr = ("\nInvalid piece number. The general can only have number 0.")
-            print("Try again. Type \"help\" for help if needed, and type \"rules\" for rules.\n")
+            printstr = (
+                "\nInvalid piece number. The general can only have number 0.")
+            print(
+                "Try again. Type \"help\" for help if needed, and type \"rules\" for rules.\n")
             return -1, -1, printstr
         piecename += tempnumber
-        
+
     elif tempname == "A":
         piecename += "advisor."
         if tempnumber not in ["0", "1"]:
-            printstr = ("\nInvalid piece number. The advisor can only have numbers 0 or 1.")
-            print("Try again. Type \"help\" for help if needed, and type \"rules\" for rules.\n")
+            printstr = (
+                "\nInvalid piece number. The advisor can only have numbers 0 or 1.")
+            print(
+                "Try again. Type \"help\" for help if needed, and type \"rules\" for rules.\n")
             return -1, -1, printstr
         piecename += tempnumber
-        
+
     elif tempname == "E":
         piecename += "elephant."
         if tempnumber not in ["0", "1"]:
-            printstr = ("\nInvalid piece number. The elephant can only have numbers 0 or 1.")
-            print("Try again. Type \"help\" for help if needed, and type \"rules\" for rules.\n")
+            printstr = (
+                "\nInvalid piece number. The elephant can only have numbers 0 or 1.")
+            print(
+                "Try again. Type \"help\" for help if needed, and type \"rules\" for rules.\n")
             return -1, -1, printstr
         piecename += tempnumber
-        
+
     elif tempname == "H":
         piecename += "horse."
         if tempnumber not in ["0", "1"]:
-            printstr = ("\nInvalid piece number. The horse can only have numbers 0 or 1.")
-            print("Try again. Type \"help\" for help if needed, and type \"rules\" for rules.\n")
+            printstr = (
+                "\nInvalid piece number. The horse can only have numbers 0 or 1.")
+            print(
+                "Try again. Type \"help\" for help if needed, and type \"rules\" for rules.\n")
             return -1, -1, printstr
         piecename += tempnumber
-        
+
     elif tempname == "R":
         piecename += "chariot."
         if tempnumber not in ["0", "1"]:
-            printstr = ("\nInvalid piece number. The chariot can only have numbers 0 or 1.")
-            print("Try again. Type \"help\" for help if needed, and type \"rules\" for rules.\n")
+            printstr = (
+                "\nInvalid piece number. The chariot can only have numbers 0 or 1.")
+            print(
+                "Try again. Type \"help\" for help if needed, and type \"rules\" for rules.\n")
             return -1, -1, printstr
         piecename += tempnumber
-        
+
     elif tempname == "C":
         piecename += "cannon."
         if tempnumber not in ["0", "1"]:
-            printstr = ("\nInvalid piece number. The cannon can only have numbers 0 or 1.")
-            print("Try again. Type \"help\" for help if needed, and type \"rules\" for rules.\n")
+            printstr = (
+                "\nInvalid piece number. The cannon can only have numbers 0 or 1.")
+            print(
+                "Try again. Type \"help\" for help if needed, and type \"rules\" for rules.\n")
             return -1, -1, printstr
         piecename += tempnumber
-        
+
     elif tempname == "S":
         piecename += "soldier."
         if tempnumber not in ["0", "1", "2", "3", "4"]:
-            printstr = ("\nInvalid piece number. The soldier can only have numbers 0, 1, 2, 3, or 4.")
-            print("Try again. Type \"help\" for help if needed, and type \"rules\" for rules.\n")
+            printstr = (
+                "\nInvalid piece number. The soldier can only have numbers 0, 1, 2, 3, or 4.")
+            print(
+                "Try again. Type \"help\" for help if needed, and type \"rules\" for rules.\n")
             return -1, -1, printstr
         piecename += tempnumber
-        
+
     else:
         printstr = ("\nInvalid piece name letter.")
-        print("Try again. Type \"help\" for help if needed, and type \"rules\" for rules.\n")
+        print(
+            "Try again. Type \"help\" for help if needed, and type \"rules\" for rules.\n")
         return -1, -1, printstr
-
 
     # If we got here, the piecename is valid. Now we handle the coordinates
     if tempx == "A" or tempx == "a":
@@ -373,15 +391,19 @@ def format_input(input_str, turn):
     elif tempx == "I" or tempx == "i":
         tempx = 8
     else:
-        printstr = ("\nInvalid x coordinate. x coordinates should be between 0 and 8")
-        print("Try again. Type \"help\" for help if needed, and type \"rules\" for rules.\n")
+        printstr = (
+            "\nInvalid x coordinate. x coordinates should be between 0 and 8")
+        print(
+            "Try again. Type \"help\" for help if needed, and type \"rules\" for rules.\n")
         return -1, -1, printstr
     if tempy not in ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]:
-        printstr = ("\nInvalid y coordinate. y coordinates should be between 0 and 9")
-        print("Try again. Type \"help\" for help if needed, and type \"rules\" for rules.\n")
+        printstr = (
+            "\nInvalid y coordinate. y coordinates should be between 0 and 9")
+        print(
+            "Try again. Type \"help\" for help if needed, and type \"rules\" for rules.\n")
         return -1, -1, printstr
     coord = [tempx, int(tempy)]
-    
+
     return [piecename, coord]
 
 
@@ -405,7 +427,7 @@ def player_move(piecename, coords, current_state):
                                 if elim_piece.name == successor[1]:
                                     F.remove(elim_piece)
                                     eliminated = elim_piece
-                                    break                
+                                    break
                         newpiece = successor[0]
                         T = current_state.t_pieces[:]
                         T.remove(piece)
@@ -425,7 +447,7 @@ def player_move(piecename, coords, current_state):
                                 if elim_piece.name == successor[1]:
                                     T.remove(elim_piece)
                                     eliminated = elim_piece
-                                    break                
+                                    break
                         newpiece = successor[0]
                         F = current_state.f_pieces[:]
                         F.remove(piece)
@@ -457,7 +479,9 @@ def num_to_letter(num):
         # Should never reach here
         return "-1"
 
+
 OK = 99
+
 
 def chinesechess(moves):
 
@@ -502,9 +526,9 @@ def chinesechess(moves):
             return 1, printstr
 
         # print_board_2(update_board_from_grid(current_state.grid))
-        
+
         # Take in next move
-        if current_state.turn: # Red turn (True)    
+        if current_state.turn:  # Red turn (True)
             print("> Red player: ", input_str)
 
             if input_str == "end":
@@ -526,7 +550,8 @@ def chinesechess(moves):
             else:
                 test = player_move(piecename, coord, current_state)
                 if test == None:
-                    printstr = ("Invalid move. This piece is unable to go to the desired location.")
+                    printstr = (
+                        "Invalid move. This piece is unable to go to the desired location.")
                     return -1, printstr
                 else:
                     # Do I need to use the whole previous_piece, new_piece stuff and built a new Gamestate object?
@@ -535,20 +560,21 @@ def chinesechess(moves):
                     y0 = current_state.move[0].pos.y
                     x1 = num_to_letter(current_state.move[1].pos.x)
                     y1 = current_state.move[1].pos.y
-                    printstr = "Red Player moved piece {} from {}{} to {}{}".format(current_state.move[0].name, x0, y0, x1, y1)
+                    printstr = "Red Player moved piece {} from {}{} to {}{}".format(
+                        current_state.move[0].name, x0, y0, x1, y1)
                     if current_state.eliminated != None:
-                        printstr += " and eliminated Black player's piece {}".format(current_state.eliminated.name)
-                    printstr += "\n"                        
+                        printstr += " and eliminated Black player's piece {}".format(
+                            current_state.eliminated.name)
+                    printstr += "\n"
                     print(printstr)
 
-                    
         else:   # Black turn (False)
             print("> Black Player: ", input_str)
 
             if input_str == "end":
                 printstr = ("Black player has ended the game!")
                 return 1, printstr
-            
+
             temp = format_input(input_str, current_state.turn)
             piecename = temp[0]
             coord = temp[1]
@@ -561,17 +587,20 @@ def chinesechess(moves):
             else:
                 test = player_move(piecename, coord, current_state)
                 if test == None:
-                    printstr = ("Invalid move. This piece is unable to go to the desired location.\n")
+                    printstr = (
+                        "Invalid move. This piece is unable to go to the desired location.\n")
                     return -1, printstr
-                else:                        
+                else:
                     current_state = test
                     x0 = num_to_letter(current_state.move[0].pos.x)
                     y0 = current_state.move[0].pos.y
                     x1 = num_to_letter(current_state.move[1].pos.x)
                     y1 = current_state.move[1].pos.y
-                    printstr = "Black Player moved piece {} from {}{} to {}{}".format(current_state.move[0].name, x0, y0, x1, y1)
+                    printstr = "Black Player moved piece {} from {}{} to {}{}".format(
+                        current_state.move[0].name, x0, y0, x1, y1)
                     if current_state.eliminated != None:
-                        printstr += " and eliminated Red player's piece {}".format(current_state.eliminated.name)
+                        printstr += " and eliminated Red player's piece {}".format(
+                            current_state.eliminated.name)
                     printstr += "\n"
                     print(printstr)
 
@@ -604,9 +633,9 @@ def chinesechess(moves):
 #     # Unit test
 #     with open('unit_test.txt', 'r') as f:
 #         moves = f.read()
-#         res =  main(moves) 
+#         res =  main(moves)
 #         print('res', res)
-#         if len(res) == 2: 
+#         if len(res) == 2:
 #             code = res[0]
 #             msg = res[1]
 #             print("code = ", code)

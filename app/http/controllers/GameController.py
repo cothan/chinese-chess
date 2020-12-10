@@ -32,13 +32,12 @@ class GameController(Controller):
         """
         users = User.all()
         table = Table.all()
-        
+
         if request.user():
             cur_user = request.user().email
-            return view.render("game", {'users': users, 'name': cur_user, 'table': table, "cuser_id" : cur_user} )
+            return view.render("game", {'users': users, 'name': cur_user, 'table': table, "cuser_id": cur_user})
         else:
             return view.render("invalid", {"message": 'Please log in'})
-
 
     def store(self, request: Request, view: View):
         """
@@ -61,7 +60,7 @@ class GameController(Controller):
         token = token_hex(16)
 
         Table.create(
-            owner  = user_email,
+            owner=user_email,
             user_id=user_email,
             oppo_id=friend_email,
             token=token,
@@ -71,7 +70,6 @@ class GameController(Controller):
             move='',
         )
         return request.redirect("/play/@token", {'token': token})
-
 
     # def resume(self, request: Request, view: View):
     #     token = request.input('token', clean=True).strip()
