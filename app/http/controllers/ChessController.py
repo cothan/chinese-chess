@@ -37,6 +37,9 @@ class ChessController(Controller):
         if request.user().email not in (table.user_id, table.oppo_id):
             return view.render("invalid", {"message": 'You cannot view this game'})
 
+        if table.winner:
+            return view.render("invalid", {"message": 'Game over'})
+
         # Check time out
         if table.completed:
             return view.render("invalid", {"message": 'Time out'})
